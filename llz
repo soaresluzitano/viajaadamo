@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viaje com o Ádamo - Escolha seu lugar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(90deg, #2c3e50 0%, #4a6491 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #3a506b;
+            padding: 0;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+            color: white;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .tab.active {
+            background: #2c3e50;
+            border-bottom: 4px solid #3498db;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 25px;
+            background-color: #f8f9fa;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .bus-body {
+            background: linear-gradient(to bottom, #d4af37, #b8860b);
+            border: 5px solid #2c3e50;
+            border-radius: 20px;
+            padding: 25px;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .driver-section {
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+        }
+        
+        .driver-section i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .seats-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+        
+        .seat-row {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+        }
+        
+        .seat {
+            width: 65px;
+            height: 65px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid transparent;
+            font-size: 18px;
+            position: relative;
+        }
+        
+        .seat:hover:not(.selected):not(.blocked) {
+            transform: scale(1.05);
+            border-color: #3498db;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .available {
+            background-color: #ecf0f1;
+            color: #2c3e50;
+        }
+        
+        .selected {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            border: 2px solid #27ae60;
+        }
+        
+        .blocked {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        
+        .reserved {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            color: white;
+            cursor: not-allowed;
+        }
+        
+        .aisle {
+            width: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: #7f8c8d;
+            font-size: 24px;
+        }
+        
+        .bus-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #ecf0f1;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .selected-seats {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .selected-seats i {
+            font-size: 22px;
+            color: #2c3e50;
+        }
+        
+        .price-info {
+            background: #2c3e50;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-left: 15px;
+        }
+        
+        .action-btn {
+            background: linear-gradient(90deg, #3498db 0%, #2c3e50 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .action-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .whatsapp-btn {
+            background: linear-gradient(90deg, #25D366 0%, #128C7E 100%);
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            background: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .legend-color {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+        }
+        
+        .instructions {
+            text-align: center;
+            margin: 20px 0;
+            color: #2c3e50;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .admin-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .admin-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .seat-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: #ecf0f1;
+            border-radius: 8px;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #2ecc71;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .password-prompt {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .login-btn {
+            background: linear-gradient(90deg, #3498db 0%, #2c3e50 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        
+        .success-message {
+            color: #27ae60;
+            margin-top: 10px;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            background-color: #eafaf1;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s, transform 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .toast.success {
+            background-color: #27ae60;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .toast.error {
+            background-color: #e74c3c;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .reservation-info {
+            background-color: #eaf7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .reservation-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .reservation-detail {
+            background-color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        @media (max-width: 900px) {
+            .seat-row {
+                gap: 20px;
+            }
+            
+            .seat {
+                width: 55px;
+                height: 55px;
+                font-size: 16px;
+            }
+            
+            .aisle {
+                width: 60px;
+            }
+            
+            .reservation-detail {
+                min-width: 150px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .bus-info {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .seat-row {
+                gap: 15px;
+            }
+            
+            .seat {
+                width: 50px;
+                height: 50px;
+                font-size: 15px;
+            }
+            
+            .aisle {
+                width: 50px;
+                font-size: 20px;
+            }
+            
+            .legend {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .admin-controls {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .reservation-details {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .seat-row {
+                gap: 12px;
+            }
+            
+            .seat {
+                width: 45px;
+                height: 45px;
+                font-size: 14px;
+            }
+            
+            .aisle {
+                width: 40px;
+                font-size: 18px;
+            }
+            
+            .driver-section {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 22px;
+            }
+            
+            .action-btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-bus"></i> Viaje com o Ádamo</h1>
+            <p>Escolha seu lugar</p>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('user-tab')">Reserva de Assentos</div>
+            <div class="tab" onclick="switchTab('admin-tab')">Painel Administrativo</div>
+        </div>
+        
+        <div id="user-tab" class="tab-content active">
+            <div class="reservation-info">
+                <h3><i class="fas fa-info-circle"></i> Informações da Viagem</h3>
+                <div class="reservation-details">
+                    <div class="reservation-detail">
+                        <strong><i class="fas fa-route"></i> Rota:</strong> São Paulo - Rio de Janeiro
+                    </div>
+                    <div class="reservation-detail">
+                        <strong><i class="fas fa-calendar-alt"></i> Data:</strong> 15/12/2023
+                    </div>
+                    <div class="reservation-detail">
+                        <strong><i class="fas fa-clock"></i> Horário:</strong> 14:30h
+                    </div>
+                    <div class="reservation-detail">
+                        <strong><i class="fas fa-tag"></i> Valor:</strong> R$ 90,00 por assento
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bus-body">
+                <div class="driver-section">
+                    <i class="fas fa-user-tie"></i> Motorista
+                </div>
+                
+                <div class="instructions">
+                    <p>Clique nos assentos para selecionar ou deselecionar</p>
+                </div>
+                
+                <div class="seats-layout" id="seats-container">
+                    <!-- Os assentos serão gerados pelo JavaScript -->
+                </div>
+                
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #ecf0f1; border: 2px solid #bdc3c7"></div>
+                        <span>Disponível</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #2ecc71; border: 2px solid #27ae60"></div>
+                        <span>Selecionado</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #e74c3c; border: 2px solid #c0392b"></div>
+                        <span>Bloqueado</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #9b59b6; border: 2px solid #8e44ad"></div>
+                        <span>Reservado</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bus-info">
+                <div class="selected-seats">
+                    <i class="fas fa-chair"></i>
+                    <span>Assentos Selecionados: <span id="selected-seats-list">Nenhum</span></span>
+                    <div class="price-info" id="price-info">
+                        Total: R$ 0,00
+                    </div>
+                </div>
+                <button class="action-btn whatsapp-btn" id="whatsapp-btn" disabled>
+                    <i class="fab fa-whatsapp"></i> Reservar via WhatsApp
+                </button>
+            </div>
+            
+            <div class="footer">
+                <p>Clique novamente em um assento selecionado para desmarcá-lo</p>
+            </div>
+        </div>
+        
+        <div id="admin-tab" class="tab-content">
+            <div class="password-prompt" id="password-prompt">
+                <h2><i class="fas fa-lock"></i> Acesso Restrito</h2>
+                <p>Digite a senha para acessar o painel administrativo:</p>
+                <input type="password" class="password-input" id="admin-password" placeholder="Senha">
+                <button class="login-btn" onclick="checkPassword()">Acessar</button>
+                <div class="error-message" id="password-error"></div>
+            </div>
+            
+            <div class="admin-panel" id="admin-panel" style="display: none;">
+                <h2><i class="fas fa-cog"></i> Painel de Controle de Assentos</h2>
+                <p>Use esta interface para gerenciar o status dos assentos</p>
+                
+                <div class="admin-controls" id="admin-controls">
+                    <!-- Os controles de assento serão gerados pelo JavaScript -->
+                </div>
+                
+                <div class="instructions">
+                    <p>Assentos bloqueados não estarão disponíveis para seleção</p>
+                </div>
+                
+                <div class="success-message" id="admin-success-message">
+                    Alterações salvas com sucesso!
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="action-btn" onclick="saveSeatConfig()">
+                        <i class="fas fa-save"></i> Salvar Configurações
+                    </button>
+                    <button class="action-btn" onclick="exportReservations()" style="background: linear-gradient(90deg, #9b59b6 0%, #8e44ad 100%);">
+                        <i class="fas fa-download"></i> Exportar Reservas
+                    </button>
+                    <button class="action-btn" onclick="clearAllReservations()" style="background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%);">
+                        <i class="fas fa-trash"></i> Limpar Todas as Reservas
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // Dados dos assentos
+        const totalSeats = 44;
+        const seatPrice = 90; // Valor por assento
+        let blockedSeats = JSON.parse(localStorage.getItem('blockedSeats')) || [];
+        let reservedSeats = JSON.parse(localStorage.getItem('reservedSeats')) || [];
+        let selectedSeats = [];
+        let isAdminAuthenticated = false;
+        
+        // Elementos DOM
+        const seatsContainer = document.getElementById('seats-container');
+        const selectedSeatsList = document.getElementById('selected-seats-list');
+        const priceInfo = document.getElementById('price-info');
+        const whatsappBtn = document.getElementById('whatsapp-btn');
+        const adminControls = document.getElementById('admin-controls');
+        const passwordPrompt = document.getElementById('password-prompt');
+        const adminPanel = document.getElementById('admin-panel');
+        const adminPasswordInput = document.getElementById('admin-password');
+        const passwordError = document.getElementById('password-error');
+        const toast = document.getElementById('toast');
+        const adminSuccessMessage = document.getElementById('admin-success-message');
+        
+        // Inicializar a interface
+        function initializeApp() {
+            renderSeats();
+            updateSelectedSeatsList();
+            setupEventListeners();
+            
+            // Verificar se há parâmetros na URL para pré-seleção
+            const urlParams = new URLSearchParams(window.location.search);
+            const seatParam = urlParams.get('assento');
+            if (seatParam && !isSeatBlocked(seatParam) && !isSeatReserved(seatParam)) {
+                selectedSeats.push(seatParam);
+                renderSeats();
+                updateSelectedSeatsList();
+                whatsappBtn.disabled = false;
+                
+                // Rolar para a seção de assentos
+                setTimeout(() => {
+                    const seatElement = document.querySelector(`.seat[data-seat="${seatParam}"]`);
+                    if (seatElement) {
+                        seatElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        seatElement.classList.add('highlight');
+                        setTimeout(() => seatElement.classList.remove('highlight'), 2000);
+                    }
+                }, 500);
+            }
+        }
+        
+        // Verificar se um assento está bloqueado
+        function isSeatBlocked(seatId) {
+            return blockedSeats.includes(seatId);
+        }
+        
+        // Verificar se um assento está reservado
+        function isSeatReserved(seatId) {
+            return reservedSeats.includes(seatId);
+        }
+        
+        // Renderizar os assentos
+        function renderSeats() {
+            seatsContainer.innerHTML = '';
+            let seatNumber = 1;
+            
+            for (let row = 0; row < totalSeats / 4; row++) {
+                const seatRow = document.createElement('div');
+                seatRow.className = 'seat-row';
+                
+                // Assentos do lado esquerdo
+                for (let i = 0; i < 2; i++) {
+                    const seatId = seatNumber.toString().padStart(2, '0');
+                    seatRow.appendChild(createSeatElement(seatId));
+                    seatNumber++;
+                }
+                
+                // Corredor
+                const aisle = document.createElement('div');
+                aisle.className = 'aisle';
+                aisle.innerHTML = '•';
+                seatRow.appendChild(aisle);
+                
+                // Assentos do lado direito
+                for (let i = 0; i < 2; i++) {
+                    const seatId = seatNumber.toString().padStart(2, '0');
+                    seatRow.appendChild(createSeatElement(seatId));
+                    seatNumber++;
+                }
+                
+                seatsContainer.appendChild(seatRow);
+            }
+        }
+        
+        // Criar elemento de assento
+        function createSeatElement(seatId) {
+            const seat = document.createElement('div');
+            
+            // Verificar o status do assento
+            const isBlocked = isSeatBlocked(seatId);
+            const isReserved = isSeatReserved(seatId);
+            const isSelected = selectedSeats.includes(seatId);
+            
+            let seatStatus = 'available';
+            if (isBlocked) seatStatus = 'blocked';
+            else if (isReserved) seatStatus = 'reserved';
+            else if (isSelected) seatStatus = 'selected';
+            
+            seat.className = `seat ${seatStatus}`;
+            seat.textContent = seatId;
+            seat.dataset.seat = seatId;
+            
+            // Adicionar tooltip para assentos reservados
+            if (isReserved) {
+                seat.title = "Este assento já foi reservado";
+            }
+            
+            if (!isBlocked && !isReserved) {
+                seat.addEventListener('click', () => toggleSeat(seatId));
+            }
+            
+            return seat;
+        }
+        
+        // Alternar seleção de assento
+        function toggleSeat(seatId) {
+            if (isSeatBlocked(seatId) return;
+            if (isSeatReserved(seatId)) {
+                showToast("Este assento já foi reservado", "error");
+                return;
+            }
+            
+            const index = selectedSeats.indexOf(seatId);
+            
+            if (index === -1) {
+                // Limitar a seleção a no máximo 4 assentos
+                if (selectedSeats.length >= 4) {
+                    showToast("Você pode selecionar no máximo 4 assentos", "error");
+                    return;
+                }
+                selectedSeats.push(seatId);
+                showToast(`Assento ${seatId} selecionado`, "success");
+            } else {
+                selectedSeats.splice(index, 1);
+                showToast(`Assento ${seatId} removido`, "success");
+            }
+            
+            renderSeats();
+            updateSelectedSeatsList();
+            
+            // Habilitar ou desabilitar o botão do WhatsApp
+            whatsappBtn.disabled = selectedSeats.length === 0;
+        }
+        
+        // Atualizar a lista de assentos selecionados
+        function updateSelectedSeatsList() {
+            const totalPrice = selectedSeats.length * seatPrice;
+            selectedSeatsList.textContent = selectedSeats.length > 0 ? selectedSeats.join(', ') : 'Nenhum';
+            priceInfo.textContent = `Total: R$ ${totalPrice.toFixed(2)}`;
+        }
+        
+        // Renderizar controles administrativos
+        function renderAdminControls() {
+            adminControls.innerHTML = '';
+            
+            for (let i = 1; i <= totalSeats; i++) {
+                const seatId = i.toString().padStart(2, '0');
+                const isBlocked = isSeatBlocked(seatId);
+                const isReserved = isSeatReserved(seatId);
+                
+                const toggle = document.createElement('div');
+                toggle.className = 'seat-toggle';
+                
+                const label = document.createElement('span');
+                label.textContent = `Assento ${seatId}`;
+                if (isReserved) {
+                    label.innerHTML += ' <span style="color:#9b59b6;">(Reservado)</span>';
+                }
+                
+                const switchContainer = document.createElement('label');
+                switchContainer.className = 'switch';
+                
+                const input = document.createElement('input');
+                input.type = 'checkbox';
+                input.checked = !isBlocked;
+                input.dataset.seat = seatId;
+                input.disabled = isReserved;
+                
+                const slider = document.createElement('span');
+                slider.className = 'slider';
+                
+                switchContainer.appendChild(input);
+                switchContainer.appendChild(slider);
+                
+                toggle.appendChild(label);
+                toggle.appendChild(switchContainer);
+                
+                adminControls.appendChild(toggle);
+                
+                // Adicionar event listener
+                input.addEventListener('change', (e) => {
+                    toggleSeatAvailability(seatId, e.target.checked);
+                });
+            }
+        }
+        
+        // Alternar disponibilidade do assento
+        function toggleSeatAvailability(seatId, available) {
+            if (available) {
+                // Remover da lista de bloqueados
+                const index = blockedSeats.indexOf(seatId);
+                if (index !== -1) {
+                    blockedSeats.splice(index, 1);
+                }
+            } else {
+                // Adicionar à lista de bloqueados
+                if (!blockedSeats.includes(seatId)) {
+                    blockedSeats.push(seatId);
+                }
+                
+                // Remover da lista de selecionados, se estiver selecionado
+                const selectedIndex = selectedSeats.indexOf(seatId);
+                if (selectedIndex !== -1) {
+                    selectedSeats.splice(selectedIndex, 1);
+                    updateSelectedSeatsList();
+                    whatsappBtn.disabled = selectedSeats.length === 0;
+                }
+            }
+            
+            // Atualizar a exibição
+            renderSeats();
+        }
+        
+        // Salvar configuração de assentos
+        function saveSeatConfig() {
+            localStorage.setItem('blockedSeats', JSON.stringify(blockedSeats));
+            showToast("Configurações salvas com sucesso!", "success");
+            
+            // Mostrar mensagem de sucesso no painel admin
+            adminSuccessMessage.style.display = 'block';
+            setTimeout(() => {
+                adminSuccessMessage.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Verificar senha de administrador
+        function checkPassword() {
+            const password = adminPasswordInput.value;
+            
+            if (password === "Nicolas1") {
+                isAdminAuthenticated = true;
+                passwordPrompt.style.display = 'none';
+                adminPanel.style.display = 'block';
+                renderAdminControls();
+            } else {
+                passwordError.textContent = "Senha incorreta. Tente novamente.";
+                adminPasswordInput.value = '';
+            }
+        }
+        
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Botão do WhatsApp
+            whatsappBtn.addEventListener('click', sendWhatsAppMessage);
+            
+            // Permitir pressionar Enter para enviar a senha
+            adminPasswordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkPassword();
+                }
+            });
+        }
+        
+        // Enviar mensagem pelo WhatsApp
+        function sendWhatsAppMessage() {
+            if (selectedSeats.length === 0) return;
+            
+            const phoneNumber = "5511986518123";
+            const totalPrice = selectedSeats.length * seatPrice;
+            
+            // Criar mensagem
+            const message = `Olá! Gostaria de reservar os seguintes assentos: ${selectedSeats.join(', ')}. Total: R$ ${totalPrice.toFixed(2)}.`;
+            
+            // Codificar a mensagem para URL
+            const encodedMessage = encodeURIComponent(message);
+            
+            // Criar o link do WhatsApp
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+            
+            // Marcar assentos como reservados após o envio
+            reservedSeats = [...reservedSeats, ...selectedSeats];
+            localStorage.setItem('reservedSeats', JSON.stringify(reservedSeats));
+            
+            // Limpar seleção
+            selectedSeats = [];
+            updateSelectedSeatsList();
+            renderSeats();
+            whatsappBtn.disabled = true;
+            
+            // Abrir em uma nova janela/aba
+            window.open(whatsappUrl, '_blank');
+            
+            showToast("Reserva enviada com sucesso!", "success");
+        }
+        
+        // Alternar entre abas
+        function switchTab(tabId) {
+            // Desativar todas as abas
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Ativar a aba selecionada
+            document.querySelector(`.tab:nth-child(${tabId === 'user-tab' ? 1 : 2})`).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+            
+            // Se for a aba administrativa e não estiver autenticado, mostrar prompt de senha
+            if (tabId === 'admin-tab' && !isAdminAuthenticated) {
+                passwordPrompt.style.display = 'block';
+                adminPanel.style.display = 'none';
+                adminPasswordInput.value = '';
+                passwordError.textContent = '';
+            } else if (tabId === 'admin-tab' && isAdminAuthenticated) {
+                passwordPrompt.style.display = 'none';
+                adminPanel.style.display = 'block';
+                renderAdminControls();
+            }
+        }
+        
+        // Mostrar notificação toast
+        function showToast(message, type) {
+            toast.textContent = message;
+            toast.className = 'toast';
+            toast.classList.add(type);
+            
+            setTimeout(() => {
+                toast.classList.remove('success', 'error');
+                toast.style.opacity = '0';
+            }, 3000);
+        }
+        
+        // Exportar reservas
+        function exportReservations() {
+            const reservedSeats = JSON.parse(localStorage.getItem('reservedSeats')) || [];
+            const blockedSeats = JSON.parse(localStorage.getItem('blockedSeats')) || [];
+            
+            const data = {
+                reservas: reservedSeats,
+                bloqueados: blockedSeats,
+                dataExportacao: new Date().toLocaleString('pt-BR')
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `reservas-onibus-${new Date().toISOString().slice(0,10)}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            showToast("Reservas exportadas com sucesso!", "success");
+        }
+        
+        // Limpar todas as reservas
+        function clearAllReservations() {
+            if (confirm("Tem certeza que deseja limpar TODAS as reservas? Esta ação não pode ser desfeita.")) {
+                localStorage.removeItem('reservedSeats');
+                reservedSeats = [];
+                selectedSeats = [];
+                renderSeats();
+                updateSelectedSeatsList();
+                showToast("Todas as reservas foram removidas", "success");
+            }
+        }
+        
+        // Inicializar a aplicação quando o documento estiver pronto
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>
